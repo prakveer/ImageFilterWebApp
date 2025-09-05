@@ -8,6 +8,50 @@ h1 {
   margin-bottom: 20px;
 }
 
+/* Filter controls + heatmap section */
+.filter-panel {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.controls {
+  margin-bottom: 20px;
+}
+
+/* Heatmap + numeric matrix side by side */
+.matrix-panel {
+  display: flex;
+  justify-content: center;
+  gap: 50px;
+  margin-bottom: 30px;
+}
+
+.heatmap-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 50px);
+  gap: 2px;
+  margin: auto;
+}
+
+/* Heatmap cells handled by JS */
+.heatmap-grid div {
+  width: 50px;
+  height: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #fff;
+  font-weight: bold;
+}
+
+#kernelTable input {
+  width: 50px;
+  text-align: center;
+}
+
+/* Image display side by side */
 .images {
   display: flex;
   justify-content: center;
@@ -26,17 +70,12 @@ img {
 }
 
 #filterMatrix {
-  margin: 20px auto;
+  margin: 0 auto;
   border-collapse: collapse;
 }
 
 #filterMatrix td {
   border: 1px solid #888;
   padding: 5px;
-  text-align: center;
-}
-
-#filterMatrix input {
-  width: 50px;
   text-align: center;
 }

@@ -8,42 +8,60 @@
 <body>
   <h1>Image Filter Application</h1>
 
-  <form id="filterForm" method="POST" enctype="multipart/form-data">
-    <label>Upload Image:</label>
-    <input type="file" id="imageUpload" name="image"><br><br>
+  <!-- FILTER CONTROLS + HEATMAP -->
+  <div class="filter-panel">
+    <form id="filterForm" method="POST" enctype="multipart/form-data">
+      <div class="controls">
+        <label>Upload Image:</label>
+        <input type="file" id="imageUpload" name="image"><br><br>
 
-    <label>Choose Filter:</label>
-    <select id="filterSelect" name="filter">
-      <option value="blur">Blur</option>
-      <option value="sharpen">Sharpen</option>
-      <option value="edge">Edge Detection</option>
-      <option value="custom">Custom</option>
-    </select><br><br>
+        <label>Choose Filter:</label>
+        <select id="filterSelect" name="filter">
+          <option value="blur">Blur</option>
+          <option value="sharpen">Sharpen</option>
+          <option value="edge">Edge Detection</option>
+          <option value="custom">Custom</option>
+        </select><br><br>
 
-    <div id="customKernelInputs" style="display:none; margin-bottom:20px;">
-      <h3>Enter Custom 3×3 Kernel:</h3>
-      <table id="kernelTable">
-        <tr>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-        </tr>
-        <tr>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="1"></td>
-          <td><input type="number" value="0"></td>
-        </tr>
-        <tr>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-          <td><input type="number" value="0"></td>
-        </tr>
-      </table>
+        <div id="customKernelInputs" style="display:none; margin-bottom:20px;">
+          <h3>Enter Custom 3×3 Kernel:</h3>
+          <table id="kernelTable">
+            <tr>
+              <td><input type="number" value="0"></td>
+              <td><input type="number" value="0"></td>
+              <td><input type="number" value="0"></td>
+            </tr>
+            <tr>
+              <td><input type="number" value="0"></td>
+              <td><input type="number" value="1"></td>
+              <td><input type="number" value="0"></td>
+            </tr>
+            <tr>
+              <td><input type="number" value="0"></td>
+              <td><input type="number" value="0"></td>
+              <td><input type="number" value="0"></td>
+            </tr>
+          </table>
+        </div>
+
+        <button type="button" id="applyFilter">Apply Filter</button>
+      </div>
+    </form>
+
+    <!-- HEATMAP + MATRIX SIDE BY SIDE -->
+    <div class="matrix-panel">
+      <div>
+        <h2>Filter Kernel Heatmap</h2>
+        <div id="filterHeatmap" class="heatmap-grid"></div>
+      </div>
+      <div>
+        <h2>Filter Matrix</h2>
+        <table id="filterMatrix" border="1" cellpadding="5"></table>
+      </div>
     </div>
+  </div>
 
-    <button type="button" id="applyFilter">Apply Filter</button>
-  </form>
-
+  <!-- IMAGE DISPLAY -->
   <div class="images">
     <div>
       <h2>Original Image</h2>
@@ -54,12 +72,6 @@
       <img id="afterImage" src="" alt="Filtered">
     </div>
   </div>
-
-  <h2>Filter Kernel Heatmap</h2>
-  <div id="filterHeatmap" style="display:grid; grid-template-columns:repeat(3,50px); gap:2px; margin:10px auto;"></div>
-
-  <h2>Filter Matrix</h2>
-  <table id="filterMatrix" border="1" cellpadding="5"></table>
 
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
 </body>
