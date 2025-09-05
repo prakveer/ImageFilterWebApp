@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Receptive Field Calculator</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <h1>Receptive Field Calculator</h1>
+
+  <div class="controls">
+    <label>Image Size (H×W×C):</label>
+    <input type="number" id="height" placeholder="Height" value="32">
+    <input type="number" id="width" placeholder="Width" value="32">
+    <input type="number" id="channels" placeholder="Channels" value="3">
+    <button onclick="reset()">Reset</button>
+  </div>
+
+  <div class="layer-panel">
+    <h2>Add Layer</h2>
+    <label>Type:</label>
+    <select id="layer-type" onchange="updateForm()">
+      <option value="conv">Conv2D</option>
+      <option value="maxpool">MaxPool2D</option>
+      <option value="avgpool">AvgPool2D</option>
+      <option value="fc">Fully Connected</option>
+    </select>
+
+    <div id="conv-params" class="params">
+      <input type="number" id="kernel" placeholder="Kernel size" value="3">
+      <input type="number" id="stride" placeholder="Stride" value="1">
+      <input type="number" id="padding" placeholder="Padding" value="0">
+    </div>
+
+    <div id="fc-params" class="params" style="display:none;">
+      <input type="number" id="units" placeholder="Units" value="128">
+    </div>
+
+    <button onclick="addLayer()">Add Layer</button>
+  </div>
+
+  <h2>Layers</h2>
+  <table id="layers">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Layer</th>
+        <th>Output Shape (H×W×C)</th>
+        <th>Receptive Field (H×W)</th>
+        <th>Effective Stride</th>
+        <th>Remove</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+</body>
+</html>

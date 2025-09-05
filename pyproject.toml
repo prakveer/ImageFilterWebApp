@@ -1,0 +1,16 @@
+[project]
+name = "rf-calculator"
+version = "0.1.0"
+description = "Web app to calculate receptive field with a layer builder, served by Flask + uv"
+authors = [{ name = "Prakash Veerasekar" }]
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "flask>=3.0.0"
+]
+
+[tool.uv]
+# uv-specific settings can go here
+
+[project.scripts]
+run = "app:run_dev"  # Run with: uv run run
