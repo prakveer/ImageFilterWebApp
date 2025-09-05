@@ -5,8 +5,9 @@ document.addEventListener("DOMContentLoaded", () => {
     const filterSelect = document.getElementById("filterSelect");
     const applyBtn = document.getElementById("applyFilter");
     const filterMatrix = document.getElementById("filterMatrix");
+    const customKernelDiv = document.getElementById("customKernelInputs");
+    const heatmapDiv = document.getElementById("filterHeatmap");
   
-    // Predefined filters
     const filters = {
       blur: [
         [1/9, 1/9, 1/9],
@@ -25,7 +26,6 @@ document.addEventListener("DOMContentLoaded", () => {
       ]
     };
   
-    // Display matrix in table
     function showMatrix(matrix) {
       filterMatrix.innerHTML = "";
       matrix.forEach(row => {
@@ -39,25 +39,71 @@ document.addEventListener("DOMContentLoaded", () => {
       });
     }
   
-    // Show default matrix at startup
-    showMatrix(filters.blur);
+    function showHeatmap(matrix) {
+      heatmapDiv.innerHTML = "";
   
-    // Update matrix when filter changes
+      let min = Infinity, max = -Infinity;
+      matrix.flat().forEach(v => {
+        if (v < min) min = v;
+        if (v > max) max = v;
+      });
+      if (min === max) { min -= 1; max += 1; }
+  
+      matrix.forEach(row => {
+        row.forEach(val => {
+          const cell = document.createElement("div");
+          const norm = (val - min) / (max - min);
+          const r = Math.floor(255 * norm);
+          const b = Math.floor(255 * (1 - norm));
+          cell.style.backgroundColor = `rgb(${r},0,${b})`;
+          cell.style.width = "50px";
+          cell.style.height = "50px";
+          cell.style.display = "flex";
+          cell.style.alignItems = "center";
+          cell.style.justifyContent = "center";
+          cell.style.color = "#fff";
+          cell.textContent = val.toFixed(2);
+          heatmapDiv.appendChild(cell);
+        });
+      });
+    }
+  
+    function updateDisplay(matrix) {
+      showMatrix(matrix);
+      showHeatmap(matrix);
+    }
+  
+    // Initialize
+    updateDisplay(filters.blur);
+  
     filterSelect.addEventListener("change", () => {
-      const val = filterSelect.value;
-      if (filters[val]) showMatrix(filters[val]);
+      let matrix;
+      if (filterSelect.value === "custom") {
+        customKernelDiv.style.display = "block";
+        matrix = Array.from(document.querySelectorAll("#kernelTable tr")).map(tr =>
+          Array.from(tr.querySelectorAll("input")).map(inp => parseFloat(inp.value) || 0)
+        );
+      } else {
+        customKernelDiv.style.display = "none";
+        matrix = filters[filterSelect.value];
+      }
+      updateDisplay(matrix);
     });
   
-    // Preview uploaded image
     imageUpload.addEventListener("change", (e) => {
       const file = e.target.files[0];
       if (file) beforeImg.src = URL.createObjectURL(file);
     });
   
-    // Apply filter
     applyBtn.addEventListener("click", async () => {
-      const val = filterSelect.value;
-      const matrix = filters[val];
+      let matrix;
+      if (filterSelect.value === "custom") {
+        matrix = Array.from(document.querySelectorAll("#kernelTable tr")).map(tr =>
+          Array.from(tr.querySelectorAll("input")).map(inp => parseFloat(inp.value) || 0)
+        );
+      } else {
+        matrix = filters[filterSelect.value];
+      }
   
       const formData = new FormData();
       if (imageUpload.files[0]) formData.append("image", imageUpload.files[0]);
@@ -70,6 +116,8 @@ document.addEventListener("DOMContentLoaded", () => {
   
       const blob = await response.blob();
       afterImg.src = URL.createObjectURL(blob);
+  
+      updateDisplay(matrix);
     });
   });
   

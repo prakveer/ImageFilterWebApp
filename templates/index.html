@@ -17,7 +17,29 @@
       <option value="blur">Blur</option>
       <option value="sharpen">Sharpen</option>
       <option value="edge">Edge Detection</option>
+      <option value="custom">Custom</option>
     </select><br><br>
+
+    <div id="customKernelInputs" style="display:none; margin-bottom:20px;">
+      <h3>Enter Custom 3×3 Kernel:</h3>
+      <table id="kernelTable">
+        <tr>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+        </tr>
+        <tr>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="1"></td>
+          <td><input type="number" value="0"></td>
+        </tr>
+        <tr>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+          <td><input type="number" value="0"></td>
+        </tr>
+      </table>
+    </div>
 
     <button type="button" id="applyFilter">Apply Filter</button>
   </form>
@@ -32,6 +54,9 @@
       <img id="afterImage" src="" alt="Filtered">
     </div>
   </div>
+
+  <h2>Filter Kernel Heatmap</h2>
+  <div id="filterHeatmap" style="display:grid; grid-template-columns:repeat(3,50px); gap:2px; margin:10px auto;"></div>
 
   <h2>Filter Matrix</h2>
   <table id="filterMatrix" border="1" cellpadding="5"></table>
