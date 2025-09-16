@@ -42,6 +42,33 @@
               <td><input type="number" value="0"></td>
             </tr>
           </table>
+
+          <!-- AI Generator Section - Added Here -->
+          <div style="margin-top: 20px; padding: 15px; border: 2px solid #4CAF50; border-radius: 8px; background-color: #f9f9f9;">
+            <h4 style="color: #4CAF50; margin-top: 0;">🤖 AI Kernel Generator</h4>
+            <p style="margin: 10px 0; font-size: 14px; color: #666;">Describe what kind of filter effect you want!</p>
+            
+            <input type="text" id="aiRequest" placeholder="e.g., 'reduce noise', 'detect edges', 'emboss effect'" 
+                   style="width: 300px; padding: 8px; margin-right: 10px; border: 1px solid #ddd; border-radius: 4px;">
+            <button type="button" onclick="generateKernel()" 
+                    style="background-color: #4CAF50; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">
+              Generate with AI
+            </button>
+            
+            <div id="aiResult" style="margin-top: 15px; display: none;">
+              <div id="aiExplanation" style="background: #e8f4fd; padding: 10px; border-radius: 4px; margin-bottom: 10px;"></div>
+              <button type="button" onclick="useAIKernel()" 
+                      style="background-color: #008CBA; color: white; padding: 8px 16px; border: none; border-radius: 4px; cursor: pointer;">
+                Use This Kernel
+              </button>
+            </div>
+            
+            <div id="aiLoading" style="display: none; margin-top: 10px; color: #666;">
+              Generating kernel...
+            </div>
+            
+            <div id="aiError" style="display: none; margin-top: 10px; color: #d32f2f; background: #ffebee; padding: 8px; border-radius: 4px;"></div>
+          </div>
         </div>
 
         <button type="button" id="applyFilter">Apply Filter</button>
@@ -74,5 +101,69 @@
   </div>
 
   <script src="{{ url_for('static', filename='js/app.js') }}"></script>
+  <script>
+    let generatedKernel = null;
+
+    async function generateKernel() {
+      const request = document.getElementById('aiRequest').value.trim();
+      if (!request) {
+        alert("Please describe what kind of filter you want!");
+        return;
+      }
+
+      // Show loading
+      document.getElementById('aiLoading').style.display = 'block';
+      document.getElementById('aiResult').style.display = 'none';
+      document.getElementById('aiError').style.display = 'none';
+
+      try {
+        const response = await fetch('/generate_kernel', {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({request})
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          generatedKernel = data.kernel;
+          document.getElementById('aiExplanation').innerHTML = `<strong>Generated kernel:</strong> ${data.explanation}`;
+          document.getElementById('aiResult').style.display = 'block';
+        } else {
+          document.getElementById('aiError').textContent = data.error;
+          document.getElementById('aiError').style.display = 'block';
+        }
+      } catch (error) {
+        document.getElementById('aiError').textContent = 'Error: ' + error.message;
+        document.getElementById('aiError').style.display = 'block';
+      } finally {
+        document.getElementById('aiLoading').style.display = 'none';
+      }
+    }
+
+    function useAIKernel() {
+      if (generatedKernel) {
+        const inputs = document.querySelectorAll('#kernelTable input');
+        let index = 0;
+        generatedKernel.forEach(row => {
+          row.forEach(val => {
+            if (inputs[index]) {
+              inputs[index].value = val.toFixed(6);
+              index++;
+            }
+          });
+        });
+        
+        // Update display
+        updateDisplay(generatedKernel);
+        alert('AI-generated kernel loaded!');
+      }
+    }
+
+    // Allow Enter key
+    document.getElementById('aiRequest').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') generateKernel();
+    });
+  </script>
 </body>
 </html>
